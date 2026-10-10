@@ -5,7 +5,6 @@ import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { LinkList } from "../components/LinkList";
-import Box from "@mui/material/Box";
 import { useState, useEffect } from "react";
 
 export function LinksPage() {
