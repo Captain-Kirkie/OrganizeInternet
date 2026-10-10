@@ -6,11 +6,11 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { LinkList } from "../components/LinkList";
 import Box from "@mui/material/Box";
+import { useState, useEffect } from "react";
 
 export function LinksPage() {
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-
     console.log("handling submit!!  Save the link here!!  ");
   }
 
@@ -23,6 +23,15 @@ export function LinksPage() {
     const category = String(new FormData(event.currentTarget).get("category") ?? "");
     createCategory(category);
   }
+
+  const [categories, setCategories] = useState<string[]>([]);
+
+  useEffect(() => {
+    // intially fetch teh categories from the server
+    fetch("/api/categories").then(response => response.json()).then(categories => {
+      setCategories(categories);
+    });
+  }, [categories])
 
   return (
     <Container component="main" maxWidth="sm" sx={{ py: 2 }}>
