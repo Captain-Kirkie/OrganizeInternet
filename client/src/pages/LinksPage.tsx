@@ -31,19 +31,20 @@ export function LinksPage() {
       </Typography>
       <Stack direction="column" spacing={2}>
         <LinkList links={[]} />
-        <Stack component="form" spacing={1.5} onSubmit={handleSubmit}>
-          <TextField name="url" type="url" label="URL" />
-          <TextField name="title" label="Title" />
-          <Button type="submit" variant="contained">
-            Save
-          </Button>
-        </Stack>
-
-        <Stack component="form" spacing={1.5} onSubmit={handleCreateCategory}>
-          <TextField name="category" label="Create a new category" />
-          <Button type="submit" variant="contained">
-            Create Category
-          </Button>
+        <Stack spacing={6}>
+          <Stack component="form" spacing={1.5} onSubmit={handleSubmit}>
+            <TextField name="url" type="url" label="URL" />
+            <TextField name="title" label="Title" />
+            <Button type="submit" variant="contained">
+              Save
+            </Button>
+          </Stack>
+          <Stack component="form" spacing={1.5} onSubmit={handleCreateCategory}>
+            <TextField name="category" label="Create a new category" />
+            <Button type="submit" variant="contained">
+              Create Category
+            </Button>
+          </Stack>
         </Stack>
       </Stack>
     </Container>
