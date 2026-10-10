@@ -7,6 +7,7 @@ import Typography from "@mui/material/Typography";
 import { LinkList } from "../components/LinkList";
 import { useState, useEffect } from "react";
 import type { Category } from "@shared/category";
+import { createCategory } from "../api/categories";
 
 import MenuItem from "@mui/material/MenuItem";
 
@@ -16,28 +17,29 @@ export function LinksPage() {
     console.log("handling submit!!  Save the link here!!  ");
   }
 
-  async function createCategory(category: string) {
-    console.log("creating category!!  ", category);
+  // async function createCategory(category: string) {
+  //   console.log("creating category!!  ", category);
 
-    const response = await fetch("/api/categories", {
-      method: "POST",
-      body: JSON.stringify({ name: category, description: category }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    if (!response.ok) {
-      throw new Error("Failed to create category");
-    }
-    const data = await response.json();
-    console.log("Category created successfully", data);
-    setCategories([...categories, { id: data.id, name: category, description: category }]);
-  }
+  //   const response = await fetch("/api/categories", {
+  //     method: "POST",
+  //     body: JSON.stringify({ name: category, description: category }),
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //   });
+  //   if (!response.ok) {
+  //     throw new Error("Failed to create category");
+  //   }
+  //   const data = await response.json();
+  //   console.log("Category created successfully", data);
+  // }
 
-  function handleCreateCategory(event: FormEvent<HTMLFormElement>) {
+  async function handleCreateCategory(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const category = String(new FormData(event.currentTarget).get("category") ?? "");
-    createCategory(category);
+
+    const newCategory = await createCategory(category);
+    setCategories([...categories, newCategory]);
   }
 
   const [categories, setCategories] = useState<Category[]>([]);

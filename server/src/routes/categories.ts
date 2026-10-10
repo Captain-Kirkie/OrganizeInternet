@@ -13,11 +13,18 @@ categoryRouter.get("/", async (_req, res) => {
 categoryRouter.post("/", async (_req, res) => {
     try {
         const { name, description } = _req.body
-        console.log('Creating category ${name} with description ${description}');
-        await db.insert(categories).values({ name, description });
-        res.status(201).json({ message: "Category created successfully" });
+        console.log(`Creating category ${name} with description ${description}`);
+        const [created] = await db.insert(categories).values({ name, description }).returning();
+        res.status(201).json(created);
     } catch (error) {
-        console.error('Error creating category: ${error}');
+        console.error("Error creating category:", error);
+        const code = error instanceof Error && "cause" in error
+            ? (error.cause as { code?: string } | undefined)?.code
+            : undefined;
+        if (code === "23505") {
+            res.status(409).json({ error: "Category already exists" });
+            return;
+        }
         res.status(500).json({ error: "Failed to create category" });
     }
 });
