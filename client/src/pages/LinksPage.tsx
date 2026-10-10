@@ -1,13 +1,19 @@
 import type { FormEvent } from "react";
+import { LinkList } from "../components/LinkList";
 
 export function LinksPage() {
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+
+    console.log("handling submit!!  Save the link here!!  ")
   }
 
   return (
     <main>
       <h1>Links</h1>
+
+      <LinkList links={[]} />
+
       <form onSubmit={handleSubmit}>
         <label>
           URL
