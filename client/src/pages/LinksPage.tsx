@@ -6,6 +6,9 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { LinkList } from "../components/LinkList";
 import { useState, useEffect } from "react";
+import type { Category } from "@shared/category";
+
+import MenuItem from "@mui/material/MenuItem";
 
 export function LinksPage() {
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -23,7 +26,7 @@ export function LinksPage() {
     createCategory(category);
   }
 
-  const [categories, setCategories] = useState<string[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
 
   useEffect(() => {
     // intially fetch teh categories from the server
@@ -43,6 +46,12 @@ export function LinksPage() {
           <Stack component="form" spacing={1.5} onSubmit={handleSubmit}>
             <TextField name="url" type="url" label="URL" />
             <TextField name="title" label="Title" />
+
+            <TextField name="categoryId" label="Category" select defaultValue="">
+              {categories.map((c: Category) => {
+                return <MenuItem key={c.id} value={c.id}>{c.description}</MenuItem>
+              })}
+            </TextField>
             <Button type="submit" variant="contained">
               Save
             </Button>
