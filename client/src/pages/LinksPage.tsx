@@ -10,6 +10,8 @@ import type { Category } from "@shared/category";
 import { createCategory } from "../api/categories";
 import Alert from "@mui/material/Alert";
 import MenuItem from "@mui/material/MenuItem";
+import { fetchLinks } from "../api/links";
+import { Link } from "@shared/link";
 
 function clearForm(form: HTMLFormElement) {
   form.reset();
@@ -29,11 +31,17 @@ export function LinksPage() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [banner, setBanner] = useState<{ severity: "success" | "error"; message: string } | null>(null);
 
+  const [links, setLinks] = useState<Link[]>([]);
+
 
   useEffect(() => {
     // intially fetch the categories from the server
     fetch("/api/categories").then(response => response.json()).then((data: { categories: Category[] }) => {
       setCategories(data.categories);
+    });
+
+    fetchLinks().then((data: Link[]) => {
+      setLinks(data);
     });
   }, [])
 
@@ -55,6 +63,7 @@ export function LinksPage() {
     }
     else {
       const data = await response.json();
+      setLinks([...links, data]);
       setBanner({ severity: "success", message: `Link successfully created` });
       clearForm(form);
     }
@@ -71,9 +80,14 @@ export function LinksPage() {
           {banner.message}
         </Alert>
       )}
-      <Typography variant="h4" component="h1" gutterBottom>
-        Links
-      </Typography>
+      <Stack>
+
+        <Typography variant="h4" component="h1" gutterBottom>
+          Links
+        </Typography>
+        <LinkList links={links} />
+      </Stack>
+
       <Stack direction="column" spacing={2}>
         <LinkList links={[]} />
         <Stack spacing={6}>
