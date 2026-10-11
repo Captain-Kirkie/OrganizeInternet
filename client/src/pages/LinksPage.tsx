@@ -11,13 +11,19 @@ import { createCategory } from "../api/categories";
 import Alert from "@mui/material/Alert";
 import MenuItem from "@mui/material/MenuItem";
 
+function clearForm(form: HTMLFormElement) {
+  form.reset();
+}
+
 export function LinksPage() {
   async function handleCreateCategory(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const category = String(new FormData(event.currentTarget).get("category") ?? "");
+    const form = event.currentTarget;
+    const category = String(new FormData(form).get("category") ?? "");
 
     const newCategory = await createCategory(category);
     setCategories([...categories, newCategory]);
+    clearForm(form);
   }
   // state
   const [categories, setCategories] = useState<Category[]>([]);
@@ -34,7 +40,8 @@ export function LinksPage() {
 
   async function createLink(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const formData = new FormData(event.currentTarget);
+    const form = event.currentTarget;
+    const formData = new FormData(form);
 
     const response = await fetch("/api/links", {
       method: "POST",
@@ -48,8 +55,8 @@ export function LinksPage() {
     }
     else {
       const data = await response.json();
-      console.log("Link created successfully", data);
       setBanner({ severity: "success", message: `Link successfully created` });
+      clearForm(form);
     }
 
     setTimeout(() => {
