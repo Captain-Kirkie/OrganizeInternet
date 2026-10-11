@@ -34,3 +34,9 @@ npm run migrate
 - `GET /api/links` — list
 - `POST /api/links` — create (`url`, optional `title`)
 - `DELETE /api/links/:id` — delete
+
+
+## Ideas for imporvement
+- AI Automatically creates categories
+- I generates descriptions, does filtering and validating when whatever is in the link has changed.
+
