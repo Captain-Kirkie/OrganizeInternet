@@ -17,23 +17,6 @@ export function LinksPage() {
     console.log("handling submit!!  Save the link here!!  ");
   }
 
-  // async function createCategory(category: string) {
-  //   console.log("creating category!!  ", category);
-
-  //   const response = await fetch("/api/categories", {
-  //     method: "POST",
-  //     body: JSON.stringify({ name: category, description: category }),
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //   });
-  //   if (!response.ok) {
-  //     throw new Error("Failed to create category");
-  //   }
-  //   const data = await response.json();
-  //   console.log("Category created successfully", data);
-  // }
-
   async function handleCreateCategory(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const category = String(new FormData(event.currentTarget).get("category") ?? "");
@@ -45,7 +28,7 @@ export function LinksPage() {
   const [categories, setCategories] = useState<Category[]>([]);
 
   useEffect(() => {
-    // intially fetch teh categories from the server
+    // intially fetch the categories from the server
     fetch("/api/categories").then(response => response.json()).then((data: { categories: Category[] }) => {
       setCategories(data.categories);
     });
