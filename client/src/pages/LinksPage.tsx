@@ -10,7 +10,7 @@ import type { Category } from "@shared/category";
 import { createCategory } from "../api/categories";
 import Alert from "@mui/material/Alert";
 import MenuItem from "@mui/material/MenuItem";
-import { fetchLinks } from "../api/links";
+import { createLink, fetchLinks } from "../api/links";
 import { Link } from "@shared/link";
 
 function clearForm(form: HTMLFormElement) {
@@ -46,26 +46,22 @@ export function LinksPage() {
   }, [])
 
 
-  async function createLink(event: FormEvent<HTMLFormElement>) {
+  async function handleCreateLink(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = event.currentTarget;
     const formData = new FormData(form);
 
-    const response = await fetch("/api/links", {
-      method: "POST",
-      body: JSON.stringify({ url: formData.get("url"), title: formData.get("title"), categoryId: formData.get("categoryId") }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    if (!response.ok) {
-      setBanner({ severity: "error", message: "Failed to create link" });
-    }
-    else {
-      const data = await response.json();
+    try {
+      const data = await createLink(
+        String(formData.get("url") ?? ""),
+        String(formData.get("title") ?? ""),
+        String(formData.get("categoryId") ?? ""),
+      );
       setLinks([...links, data]);
       setBanner({ severity: "success", message: `Link successfully created` });
       clearForm(form);
+    } catch {
+      setBanner({ severity: "error", message: "Failed to create link" });
     }
 
     setTimeout(() => {
@@ -91,7 +87,7 @@ export function LinksPage() {
       <Stack direction="column" spacing={2}>
         <LinkList links={[]} />
         <Stack spacing={6}>
-          <Stack component="form" spacing={1.5} onSubmit={createLink}>
+          <Stack component="form" spacing={1.5} onSubmit={handleCreateLink}>
             <TextField name="url" type="url" label="URL" />
             <TextField name="title" label="Title" />
 

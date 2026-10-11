@@ -15,10 +15,21 @@ export async function fetchLinks(): Promise<Link[]> {
 }
 
 export async function createLink(
-  _url: string,
-  _title?: string,
+  url: string,
+  title: string,
+  categoryId: string,
 ): Promise<Link> {
-  throw new Error("not implemented");
+  const response = await fetch("/api/links", {
+    method: "POST",
+    body: JSON.stringify({ url, title, categoryId }),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  if (!response.ok) {
+    throw new Error("Failed to create link");
+  }
+  return (await response.json()) as Link;
 }
 
 export async function deleteLink(_id: string): Promise<void> {
