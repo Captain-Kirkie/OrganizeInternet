@@ -2,9 +2,11 @@ import { Router } from "express";
 import { db } from "../db/index.js";
 import { links, linksCategories } from "../db/schema.js";
 export const linksRouter = Router();
+import type { Link } from "@shared/link";
 
-linksRouter.get("/", (_req, res) => {
-  res.status(501).json({ error: "not implemented" });
+linksRouter.get("/", async (_req, res) => {
+  const rows = await db.select().from(links);
+  res.json(rows);
 });
 /*  
 route to add a link
