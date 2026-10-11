@@ -8,6 +8,13 @@
       "when": 1791659257552,
       "tag": "0000_unusual_dragon_man",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1791741925229,
+      "tag": "0001_oval_doctor_strange",
+      "breakpoints": true
     }
   ]
 }
