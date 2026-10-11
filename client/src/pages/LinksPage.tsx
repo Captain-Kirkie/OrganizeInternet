@@ -8,14 +8,12 @@ import { LinkList } from "../components/LinkList";
 import { useState, useEffect } from "react";
 import type { Category } from "@shared/category";
 import { createCategory } from "../api/categories";
-
+import Alert from "@mui/material/Alert";
 import MenuItem from "@mui/material/MenuItem";
 
 export function LinksPage() {
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    console.log("handling submit!!  Save the link here!!  ");
-  }
+
+
 
   async function handleCreateCategory(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -24,8 +22,10 @@ export function LinksPage() {
     const newCategory = await createCategory(category);
     setCategories([...categories, newCategory]);
   }
-
+  // state
   const [categories, setCategories] = useState<Category[]>([]);
+  const [banner, setBanner] = useState<{ severity: "success" | "error"; message: string } | null>(null);
+
 
   useEffect(() => {
     // intially fetch the categories from the server
@@ -34,15 +34,46 @@ export function LinksPage() {
     });
   }, [])
 
+
+  async function createLink(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    console.log("handling submit!!  Save the link here!!  ");
+    const formData = new FormData(event.currentTarget);
+    console.log(formData.get("url"));
+    console.log(formData.get("title"));
+    console.log(formData.get("categoryId"));
+
+    const response = await fetch("/api/links", {
+      method: "POST",
+      body: JSON.stringify({ url: formData.get("url"), title: formData.get("title"), categoryId: formData.get("categoryId") }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (!response.ok) {
+      setBanner({ severity: "error", message: "Failed to create link" });
+    }
+    else {
+      const data = await response.json();
+      console.log("Link created successfully", data);
+      setBanner({ severity: "success", message: `Link successfully created` });
+    }
+  }
+
   return (
     <Container component="main" maxWidth="sm" sx={{ py: 2 }}>
+      {banner && (
+        <Alert severity={banner.severity} onClose={() => setBanner(null)} sx={{ mb: 2 }}>
+          {banner.message}
+        </Alert>
+      )}
       <Typography variant="h4" component="h1" gutterBottom>
         Links
       </Typography>
       <Stack direction="column" spacing={2}>
         <LinkList links={[]} />
         <Stack spacing={6}>
-          <Stack component="form" spacing={1.5} onSubmit={handleSubmit}>
+          <Stack component="form" spacing={1.5} onSubmit={createLink}>
             <TextField name="url" type="url" label="URL" />
             <TextField name="title" label="Title" />
 
