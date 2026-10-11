@@ -1,17 +1,26 @@
 import type { FormEvent } from "react";
+import Alert from "@mui/material/Alert";
+import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import CardMedia from "@mui/material/CardMedia";
 import Container from "@mui/material/Container";
+import MenuItem from "@mui/material/MenuItem";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { useState, useEffect } from "react";
+import { Link as RouterLink } from "react-router";
 import type { Category } from "@shared/category";
 import { createCategory } from "../api/categories";
-import Alert from "@mui/material/Alert";
-import MenuItem from "@mui/material/MenuItem";
-import MuiLink from "@mui/material/Link";
 import { createLink } from "../api/links";
-import { Link as RouterLink } from "react-router";
+
+const defaultCategoryImage = "/category-default.jpg";
+
+function categoryImage(category: Category) {
+  return category.imageUrl || defaultCategoryImage;
+}
 
 function clearForm(form: HTMLFormElement) {
   form.reset();
@@ -60,27 +69,61 @@ export function LinksPage() {
   }
 
   return (
-    <Container component="main" maxWidth="sm" sx={{ py: 2 }}>
+    <Container component="main" maxWidth="md" sx={{ py: 3 }}>
       {banner && (
         <Alert severity={banner.severity} onClose={() => setBanner(null)} sx={{ mb: 2 }}>
           {banner.message}
         </Alert>
       )}
       <Typography variant="h4" component="h1" gutterBottom>
-        Links
+        Categories
       </Typography>
-      <Stack spacing={1} sx={{ mb: 4 }}>
-        {categories.map((category) => (
-          <MuiLink
-            key={category.id}
-            component={RouterLink}
-            to={`/categories/${category.id}`}
-            underline="hover"
-          >
-            {category.name}
-          </MuiLink>
-        ))}
-      </Stack>
+      <Box
+        sx={{
+          maxHeight: 440,
+          overflowY: "auto",
+          mb: 4,
+          pr: 0.5,
+        }}
+      >
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))",
+            gap: 2,
+          }}
+        >
+          {categories.map((category) => (
+            <Card
+              key={category.id}
+              component={RouterLink}
+              to={`/categories/${category.id}`}
+              sx={{
+                textDecoration: "none",
+                color: "inherit",
+                borderRadius: 2,
+                transition: "transform 160ms ease, box-shadow 160ms ease",
+                "&:hover": {
+                  transform: "translateY(-2px)",
+                  boxShadow: 4,
+                },
+              }}
+            >
+              <CardMedia
+                component="img"
+                height="140"
+                image={categoryImage(category)}
+                alt=""
+              />
+              <CardContent>
+                <Typography variant="subtitle1" component="h2">
+                  {category.name}
+                </Typography>
+              </CardContent>
+            </Card>
+          ))}
+        </Box>
+      </Box>
 
       <Stack direction="column" spacing={2}>
         <Stack spacing={6}>
