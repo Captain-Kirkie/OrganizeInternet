@@ -12,9 +12,6 @@ import Alert from "@mui/material/Alert";
 import MenuItem from "@mui/material/MenuItem";
 
 export function LinksPage() {
-
-
-
   async function handleCreateCategory(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const category = String(new FormData(event.currentTarget).get("category") ?? "");
@@ -37,11 +34,7 @@ export function LinksPage() {
 
   async function createLink(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    console.log("handling submit!!  Save the link here!!  ");
     const formData = new FormData(event.currentTarget);
-    console.log(formData.get("url"));
-    console.log(formData.get("title"));
-    console.log(formData.get("categoryId"));
 
     const response = await fetch("/api/links", {
       method: "POST",
@@ -58,6 +51,10 @@ export function LinksPage() {
       console.log("Link created successfully", data);
       setBanner({ severity: "success", message: `Link successfully created` });
     }
+
+    setTimeout(() => {
+      setBanner(null);
+    }, 3000);
   }
 
   return (
