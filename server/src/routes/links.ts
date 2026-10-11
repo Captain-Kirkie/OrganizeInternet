@@ -1,10 +1,27 @@
+import { eq } from "drizzle-orm";
 import { Router } from "express";
 import { db } from "../db/index.js";
 import { links, linksCategories } from "../db/schema.js";
-export const linksRouter = Router();
-import type { Link } from "@shared/link";
 
-linksRouter.get("/", async (_req, res) => {
+export const linksRouter = Router();
+
+linksRouter.get("/", async (req, res) => {
+  const categoryId = req.query.categoryId;
+  if (typeof categoryId === "string" && categoryId.length > 0) {
+    const rows = await db
+      .select({
+        id: links.id,
+        url: links.url,
+        title: links.title,
+        createdAt: links.createdAt,
+      })
+      .from(links)
+      .innerJoin(linksCategories, eq(links.id, linksCategories.linkId))
+      .where(eq(linksCategories.categoryId, categoryId));
+    res.json(rows);
+    return;
+  }
+
   const rows = await db.select().from(links);
   res.json(rows);
 });

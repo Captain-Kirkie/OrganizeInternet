@@ -1,8 +1,11 @@
 import type { Link } from "@shared/link";
 
-export async function fetchLinks(): Promise<Link[]> {
+export async function fetchLinks(categoryId?: string): Promise<Link[]> {
+  const path = categoryId
+    ? `/api/links?categoryId=${encodeURIComponent(categoryId)}`
+    : "/api/links";
   try {
-    const response = await fetch("/api/links");
+    const response = await fetch(path);
     if (!response.ok) {
       throw new Error("Failed to fetch links");
     }

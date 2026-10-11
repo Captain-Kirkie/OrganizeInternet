@@ -4,14 +4,14 @@ import Container from "@mui/material/Container";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-import { LinkList } from "../components/LinkList";
 import { useState, useEffect } from "react";
 import type { Category } from "@shared/category";
 import { createCategory } from "../api/categories";
 import Alert from "@mui/material/Alert";
 import MenuItem from "@mui/material/MenuItem";
-import { createLink, fetchLinks } from "../api/links";
-import { Link } from "@shared/link";
+import MuiLink from "@mui/material/Link";
+import { createLink } from "../api/links";
+import { Link as RouterLink } from "react-router";
 
 function clearForm(form: HTMLFormElement) {
   form.reset();
@@ -27,21 +27,12 @@ export function LinksPage() {
     setCategories([...categories, newCategory]);
     clearForm(form);
   }
-  // state
   const [categories, setCategories] = useState<Category[]>([]);
   const [banner, setBanner] = useState<{ severity: "success" | "error"; message: string } | null>(null);
 
-  const [links, setLinks] = useState<Link[]>([]);
-
-
   useEffect(() => {
-    // intially fetch the categories from the server
     fetch("/api/categories").then(response => response.json()).then((data: { categories: Category[] }) => {
       setCategories(data.categories);
-    });
-
-    fetchLinks().then((data: Link[]) => {
-      setLinks(data);
     });
   }, [])
 
@@ -52,12 +43,11 @@ export function LinksPage() {
     const formData = new FormData(form);
 
     try {
-      const data = await createLink(
+      await createLink(
         String(formData.get("url") ?? ""),
         String(formData.get("title") ?? ""),
         String(formData.get("categoryId") ?? ""),
       );
-      setLinks([...links, data]);
       setBanner({ severity: "success", message: `Link successfully created` });
       clearForm(form);
     } catch {
@@ -76,16 +66,23 @@ export function LinksPage() {
           {banner.message}
         </Alert>
       )}
-      <Stack>
-
-        <Typography variant="h4" component="h1" gutterBottom>
-          Links
-        </Typography>
-        <LinkList links={links} />
+      <Typography variant="h4" component="h1" gutterBottom>
+        Links
+      </Typography>
+      <Stack spacing={1} sx={{ mb: 4 }}>
+        {categories.map((category) => (
+          <MuiLink
+            key={category.id}
+            component={RouterLink}
+            to={`/categories/${category.id}`}
+            underline="hover"
+          >
+            {category.name}
+          </MuiLink>
+        ))}
       </Stack>
 
       <Stack direction="column" spacing={2}>
-        <LinkList links={[]} />
         <Stack spacing={6}>
           <Stack component="form" spacing={1.5} onSubmit={handleCreateLink}>
             <TextField name="url" type="url" label="URL" />
