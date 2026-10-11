@@ -18,3 +18,12 @@ export async function createCategory(category: string) {
     console.log("Category created successfully", data);
     return data as Category;
 }
+
+export async function deleteCategory(id: string) {
+    const response = await fetch(`/api/categories/${id}`, {
+        method: "DELETE",
+    });
+    if (!response.ok) {
+        throw new Error("Failed to delete category");
+    }
+}
